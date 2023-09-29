@@ -1,0 +1,2 @@
+#!/usr/bin/env
+/ci/blogindex/drone/run_test.sh | tee /ci/results/lastrun.txt

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+env | tee ${RESULTS_LOG}-env_inside_container-start.txt
 
 cd /blogindex.xyz/ || \
     { echo "/blogindex.xyz does not exist"; exit 1; }
@@ -18,12 +18,7 @@ echo "Install core requirements"
 pip install -r requirements.txt
 
 echo "Running Tests"
-if [ "${RUN_ON_CI}" = "drone" ]; then
-    PYTHONPATH=. pytest --exitfirst -v --failed-first --cov . --cov-report html --capture=tee-sys
-
-else
-    pytest --exitfirst --verbose --failed-first --cov=. --cov-report html
-fi
+PYTHONPATH=. pytest --exitfirst -v --failed-first --cov . --cov-report html
 
 if [ -d "./htmlcov" ]; then
     echo "Copying htmlcov to $RESULTS_COV"
@@ -41,3 +36,5 @@ fi
 
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)" | tee ${RESULTS_FINISH}
+
+env | tee ${RESULTS_LOG}-env_inside_container-finish.txt

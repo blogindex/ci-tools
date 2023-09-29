@@ -1,16 +1,11 @@
 ---
 version: '3'
-networks:
-  drone:
-    external: true
 
 services:
 
-  apidb:
+  apitest_db:
     container_name: apitest_db
     image: postgres
-    networks:
-      - drone
     restart: always
     environment:
       - POSTGRES_USER=blogindex
@@ -21,15 +16,13 @@ services:
     container_name: apitest
     build: .
     image: blogindex/api-test:latest
-    networks:
-      - drone
     command:
       - /loop
     volumes:
       - ${RESULTS_DIR}:/${RESULTS_DIR}
 #      - /docker/dev/blogindex.xyz/beardedtek:/blogindex.xyz ##OPTIONAL to run local codebase
     depends_on:
-     - apidb
+     - apitest_db
     environment:
       - RUN_ON_CI=${RUN_ON_CI:-no}
       - DATABASE_DB=blogindex
