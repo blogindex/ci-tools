@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 # NOTE: This bash script will be placed on the host which will run the CI Testing.
 # CAPTURE START TIME
+
+# Get environment variables from files in ./.env/*
+APP_PATH="$(dirname "$(readlink -f "$0")")"
+FILES="${APP_PATH}/.env/*"
+for f in $FILES; do
+    export $(grep -v '^#' ${f} | xargs)
+done
+
+
 export RESULTS_START=$(date +%Y-%m-%d_%H-%M-%S)
 
 # Setup Variables
@@ -13,18 +22,6 @@ export RESULTS_LOG="${RESULTS_PATH}/log"
 export RESULTS_FINISH="${RESULTS_PATH}/finished"
 export RESULTS_LATEST="${RESULTS_DIR}/latest"
 
-echo "#########################################"
-echo "#########################################"
-echo "#########################################"
-echo "RESULTS_START: ${RESULTS_START}"
-echo "RESULTS_PATH: ${RESULTS_PATH}"
-echo "RESULTS_COV: ${RESULTS_COV}"
-echo "RESULTS_LOG: ${RESULTS_LOG}"
-echo "RESULTS_FINISH: ${RESULTS_FINISH}"
-echo "RESULTS_LATEST:${RESULTS_LATEST}"
-echo "#########################################"
-echo "#########################################"
-echo "#########################################"
 
 # Check if RESULTS_DIR exists and create directory structure if it does not exist.
 if [ ! -d "${RESULTS_PATH}" ]; then
